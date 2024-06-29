@@ -2,17 +2,27 @@
   "version": "2023.06.29",
   "description": "Logitech G HUB - Advanced gaming software for Logitech G devices.",
   "homepage": "https://www.logitechg.com/en-us/innovation/g-hub.html",
-  "license": "Freeware",
+  "license": {
+    "identifier": "Freeware",
+    "url": "https://www.logitech.com/en-us/legal/software-license-agreement.html"
+  },
   "url": "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe",
   "hash": "skip",
   "installer": {
     "script": [
-      "Start-Process -FilePath \"$$dir\\lghub_installer.exe\" -ArgumentList \"/S\" -Wait"
+      "Start-Process -Wait \"$$dir\\$$fname\" -ArgumentList '/S'",
+      "# Disable built-in updater if applicable",
+      "Remove-Item -ErrorAction Ignore -Recurse \"$$env:LOCALAPPDATA\\Logitech\\G HUB\\Update\" | Out-Null",
+      "$$updateFile = New-Item -Path \"$$env:LOCALAPPDATA\\Logitech\\G HUB\" -Name Update -ItemType File -Value \"Disabled by Scoop\" -Force",
+      "$$updatefile.Attributes = 'ReadOnly', 'System'",
+      "Remove-Item \"$$dir\\$$fname\" -ErrorAction SilentlyContinue"
     ]
   },
+  "shortcuts": [["LogiHub.exe", "Logitech G HUB"]],
   "uninstaller": {
     "script": [
-      "Start-Process -FilePath \"$${env:ProgramFiles(x86)}\\Logitech\\G HUB\\uninstall.exe\" -ArgumentList \"/S\" -Wait"
+      "if ($$cmd -ne 'uninstall') { return }",
+      "Start-Process -Wait \"$$env:ProgramFiles(x86)\\Logitech\\G HUB\\uninstall.exe\" -ArgumentList '/S'"
     ]
   },
   "checkver": {
