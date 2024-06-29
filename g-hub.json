@@ -1,35 +1,49 @@
 {
-  "version": "2023.06.29",
-  "description": "Logitech G HUB - Advanced gaming software for Logitech G devices.",
-  "homepage": "https://www.logitechg.com/en-us/innovation/g-hub.html",
-  "license": {
-    "identifier": "Freeware",
-    "url": "https://www.logitech.com/en-us/legal/software-license-agreement.html"
-  },
-  "url": "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe",
-  "hash": "skip",
-  "installer": {
-    "script": [
-      "Start-Process -Wait \"$$dir\\$$fname\" -ArgumentList '/S'",
-      "# Disable built-in updater if applicable",
-      "Remove-Item -ErrorAction Ignore -Recurse \"$$env:LOCALAPPDATA\\Logitech\\G HUB\\Update\" | Out-Null",
-      "$$updateFile = New-Item -Path \"$$env:LOCALAPPDATA\\Logitech\\G HUB\" -Name Update -ItemType File -Value \"Disabled by Scoop\" -Force",
-      "$$updatefile.Attributes = 'ReadOnly', 'System'",
-      "Remove-Item \"$$dir\\$$fname\" -ErrorAction SilentlyContinue"
-    ]
-  },
-  "shortcuts": [["LogiHub.exe", "Logitech G HUB"]],
-  "uninstaller": {
-    "script": [
-      "if ($$cmd -ne 'uninstall') { return }",
-      "Start-Process -Wait \"$$env:ProgramFiles(x86)\\Logitech\\G HUB\\uninstall.exe\" -ArgumentList '/S'"
-    ]
-  },
-  "checkver": {
-    "url": "https://www.logitechg.com/en-us/innovation/g-hub.html",
-    "regex": "Version ([\\d.]+)"
-  },
-  "autoupdate": {
-    "url": "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
-  }
+    "version": "6.42.12",
+    "description": "A tool to increase download speeds by up to 5 times, resume and schedule downloads.",
+    "homepage": "https://www.internetdownloadmanager.com/",
+    "license": {
+        "identifier": "Shareware",
+        "url": "https://www.internetdownloadmanager.com/support/idm-legal.html"
+    },
+    "url": "https://mirror2.internetdownloadmanager.com/idman642build12.exe?v=lt&filename=idman642build12.exe",
+    "hash": "9D01CC78DF9756D61C7D134D6D0B6760128AC87C50ACF7DAE654614AF0A40636",
+    "installer": {
+        "script": [
+            "Start-Process -Wait \"$dir\\$fname\" -ArgumentList '/extract', \"`\"$dir`\"\"",
+            "# Disable built-in updater",
+            "if (Test-Path \"$env:LOCALAPPDATA\\IDM\\Update\") {",
+            "    Remove-Item -ErrorAction Ignore -Recurse \"$env:LOCALAPPDATA\\IDM\\Update\" | Out-Null",
+            "}",
+            "New-Item -Path \"$env:LOCALAPPDATA\\IDM\" -Name Update -ItemType File -Value \"Disabled by Scoop\" -Force | Out-Null",
+            "Set-ItemProperty -Path \"$env:LOCALAPPDATA\\IDM\\Update\" -Name Attributes -Value 'ReadOnly, System'",
+            "Remove-Item \"$dir\\$fname\", \"$dir\\IDMMigrator.exe\" -ErrorAction SilentlyContinue"
+        ]
+    },
+    "shortcuts": [
+        [
+            "IDMan.exe",
+            "Internet Download Manager"
+        ]
+    ],
+    "uninstaller": {
+        "script": [
+            "if ($cmd -ne 'uninstall') { return }",
+            "Start-Process -Wait \"$dir\\IDMan.exe\" -ArgumentList '/Uninstall', '/Silent'"
+        ]
+    },
+    "checkver": {
+        "script": [
+            "$dl_url = 'https://mirror2.internetdownloadmanager.com/idman642build12.exe?v=lt&filename=idman642build12.exe'",
+            "$dl = cache_path 'idm' 'unknown' $dl_url",
+            "Invoke-WebRequest $dl_url -OutFile $dl",
+            "$ver = (Get-Item $dl).VersionInfo.ProductVersion",
+            "Move-Item -Force $dl (cache_path 'idm' $ver $dl_url)",
+            "$ver"
+        ],
+        "regex": "(\\S+)"
+    },
+    "autoupdate": {
+        "url": "https://mirror2.internetdownloadmanager.com/idman642build12.exe?v=lt&filename=idman642build12.exe"
+    }
 }
