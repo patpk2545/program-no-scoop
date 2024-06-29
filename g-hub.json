@@ -1,0 +1,25 @@
+{
+  "version": "2023.06.29",
+  "description": "Logitech G HUB - Advanced gaming software for Logitech G devices.",
+  "homepage": "https://www.logitechg.com/en-us/innovation/g-hub.html",
+  "license": "Freeware",
+  "url": "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe",
+  "hash": "skip",
+  "installer": {
+    "script": [
+      "Start-Process -FilePath \"$$dir\\lghub_installer.exe\" -ArgumentList \"/S\" -Wait"
+    ]
+  },
+  "uninstaller": {
+    "script": [
+      "Start-Process -FilePath \"$${env:ProgramFiles(x86)}\\Logitech\\G HUB\\uninstall.exe\" -ArgumentList \"/S\" -Wait"
+    ]
+  },
+  "checkver": {
+    "url": "https://www.logitechg.com/en-us/innovation/g-hub.html",
+    "regex": "Version ([\\d.]+)"
+  },
+  "autoupdate": {
+    "url": "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
+  }
+}
